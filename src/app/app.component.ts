@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
-import { JSONPlaceholderService } from './service/jsonplaceholder.service';
+import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap'; 
 import axios from 'axios';
 @Component({
   selector: 'app-root',
@@ -19,8 +18,7 @@ export class AppComponent {
   body?: String;
   closeResult?: String;
   constructor(private modalService: NgbModal) {
-    this.data = new Array<any>();
-    this.url = 'https://jsonplaceholder.typicode.com/posts';
+    this.data = new Array<any>(); 
   }
 
   openModal(content: any, data: any) {
@@ -29,6 +27,20 @@ export class AppComponent {
     this.body = data.body;
     this.modalService
       .open(content, { ariaLabelledBy: 'modal-basic-title' })
+      .result.then(
+        (result) => {
+          this.closeResult = `Closed with: ${result}`;
+        },
+        (reason) => {
+          this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+        }
+      );
+  }
+
+  openDeleteModal(contentdel: any, data: any) {
+    this.id = data.id; 
+    this.modalService
+      .open(contentdel, { ariaLabelledBy: 'modal-basic-title-del' })
       .result.then(
         (result) => {
           this.closeResult = `Closed with: ${result}`;
@@ -82,12 +94,13 @@ export class AppComponent {
       });
   }
 
-  DeletePost(id: number) {
+  DeletePost() {
     axios
-      .delete(`https://jsonplaceholder.typicode.com/posts/${id}`)
+      .delete(`https://jsonplaceholder.typicode.com/posts/${this.id}`)
       .then((response) => {
         alert('Deleted');
       });
+      
   }
   updateData() {
     axios.put(`https://jsonplaceholder.typicode.com/posts/${this.id}`, {
